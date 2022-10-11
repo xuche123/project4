@@ -17,8 +17,10 @@ def index(request):
             return HttpResponseRedirect(reverse("index"))
     else:
         post_form = PostForm()
+        posts = Post.objects.all().order_by("-timestamp")
         return render(request, "network/index.html", {
-            "post_form": post_form
+            "post_form": post_form,
+            "posts": posts
         })
 
 

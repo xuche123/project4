@@ -5,6 +5,10 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+class Followers(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
+
 class Post(models.Model):
     content = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
