@@ -29,7 +29,6 @@ def index(request):
             "page_obj": page_obj
         })
 
-
 def login_view(request):
     if request.method == "POST":
 
@@ -53,7 +52,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
-
 
 def register(request):
     if request.method == "POST":
@@ -116,12 +114,8 @@ def follow(request):
             exist.delete()
             return JsonResponse({"type": "unfollow"}, status=201)
 
-
 def following(request):
     following = Follow.objects.filter(follower=request.user).values('following')
-    following_list = [User.objects.get(id=following[i]['following']) for i in range(len(following))]
-    print(following_list)
-    
     posts = Post.objects.filter(user__in=following).order_by("-timestamp")
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
