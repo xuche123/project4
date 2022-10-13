@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
+import json
 
-from .models import User, Post
+from .models import Follow, User, Post
 from .forms import PostForm
 
 
@@ -80,12 +82,30 @@ def register(request):
         return render(request, "network/register.html")
 
 def profile(request, username):
-    user = User.objects.get(username=username)
-    posts = Post.objects.filter(user=user).order_by("-timestamp")
+    view_user = User.objects.get(username=username)
+    posts = Post.objects.filter(user=view_user).order_by("-timestamp")
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, "network/profile.html", {
-        "user": user,
+        "view_user": view_user,
         "page_obj": page_obj
     })
+
+@csrf_exempt
+def follow(request):
+    if request.method == 'POST':
+        follow = json.loads(request.body)['follow']
+        follow = User.objects.get(username=follow)
+
+        exist = Follow.objects.filter(user=request.user, following=follow)
+        if not exist:
+            follow = Follow(user=request.user, following=follow)
+            follow.save()
+            return JsonResponse({"type": "follow"}, status=201)
+        else:
+            exist.delete()
+            return JsonResponse({"type": "unfollow"}, status=201)
+
+
+

@@ -31,7 +31,7 @@
     <div class="row d-flex justify-content-center">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title"><div class="user"><a href="{% url 'profile' post.user %}">{{ post.user }}</a></div></h5>
+                <h5 class="card-title"><div class="user"><a href="{% url 'profile' post.user %}" class="text-decoration-none text-dark">{{ post.user }}</a></div></h5>
                 <p class="card-text">{{ post.content }}</p>
                 <p class="card-text">
                     <small class="text-muted">{{ post.timestamp }}</small>
@@ -78,7 +78,3 @@
     {% endif %}
 </div>
 {% endblock %} 
-
-{% block script %}
-<script src="{% static 'network/network.js' %}"></script>
-{% endblock %}
