@@ -84,12 +84,21 @@ def register(request):
 def profile(request, username):
     view_user = User.objects.get(username=username)
     posts = Post.objects.filter(user=view_user).order_by("-timestamp")
+    # following = False
+    
+    exist = Follow.objects.filter(follower=request.user, following=view_user)
+    if exist:
+        following = True
+    else:
+        following = False
+
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, "network/profile.html", {
         "view_user": view_user,
-        "page_obj": page_obj
+        "page_obj": page_obj,
+        'following': following
     })
 
 @csrf_exempt
@@ -98,9 +107,9 @@ def follow(request):
         follow = json.loads(request.body)['follow']
         follow = User.objects.get(username=follow)
 
-        exist = Follow.objects.filter(user=request.user, following=follow)
+        exist = Follow.objects.filter(follower=request.user, following=follow)
         if not exist:
-            follow = Follow(user=request.user, following=follow)
+            follow = Follow(follower=request.user, following=follow)
             follow.save()
             return JsonResponse({"type": "follow"}, status=201)
         else:
@@ -108,4 +117,16 @@ def follow(request):
             return JsonResponse({"type": "unfollow"}, status=201)
 
 
+def following(request):
+    following = Follow.objects.filter(follower=request.user).values('following')
+    following_list = [User.objects.get(id=following[i]['following']) for i in range(len(following))]
+    print(following_list)
+    
+    posts = Post.objects.filter(user__in=following).order_by("-timestamp")
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
+    return render(request, "network/following.html", {
+        "page_obj": page_obj
+    })
