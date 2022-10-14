@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (follow) {
         follow.addEventListener('click', () => {
             user = follow.dataset.id
-            // console.log(user)
             fetch(`/follow/`, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -12,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then(response => response.json())
                 .then(result => {
-                    // console.log(result)
                     console.log(result['type'])
                     if (result['type'] == 'follow') {
                         follow.innerHTML = 'Unfollow'

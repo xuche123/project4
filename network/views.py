@@ -48,7 +48,6 @@ def login_view(request):
     else:
         return render(request, "network/login.html")
 
-
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
@@ -82,8 +81,6 @@ def register(request):
 def profile(request, username):
     view_user = User.objects.get(username=username)
     posts = Post.objects.filter(user=view_user).order_by("-timestamp")
-    # following = False
-    
     exist = Follow.objects.filter(follower=request.user, following=view_user)
     if exist:
         following = True

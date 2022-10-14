@@ -1,7 +1,6 @@
 {% extends "network/layout.html" %} 
 {% load static %} 
 {% block body %}
-<div class="container">
     {% for post in page_obj %}
     <div class="row d-flex justify-content-center">
         <div class="card">
@@ -52,6 +51,5 @@
             {% endif %}
         </ul>
     </nav>
-</div>
 {% endblock %} {% block script %}
 {% endblock %}
