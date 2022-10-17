@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 import json
 
 from .models import Follow, User, Post
@@ -109,7 +110,27 @@ def follow(request):
             return JsonResponse({"type": "follow"}, status=201)
         else:
             exist.delete()
+            exist.save()
             return JsonResponse({"type": "unfollow"}, status=201)
+
+@csrf_exempt
+@login_required
+def like(request):
+    if request.method == "POST":
+        post_id = json.loads(request.body)["post_id"]
+        post = Post.objects.get(id=post_id)
+        user = request.user
+        if user in post.likes.all():
+            post.likes.remove(user)
+            post.save()
+            count = post.likes.count()
+            return JsonResponse({"type": "unlike", "count": count}, status=201)
+        else:
+            post.likes.add(user)
+            post.save()
+            count = post.likes.count()
+            return JsonResponse({"type": "like", "count": count}, status=201)
+    pass
 
 def following(request):
     following = Follow.objects.filter(follower=request.user).values('following')

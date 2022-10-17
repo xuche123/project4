@@ -34,7 +34,13 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title"><div class="user"><a href="{% url 'profile' post.user %}" class="text-decoration-none text-dark">{{ post.user }}</a></div></h5>
-                <p class="card-text">{{ post.content }}</p>
+                {% if request.user not in post.likes.all %}
+                <p class="card-text like" id="like" data-id="{{ post.id }}">like</p>
+                {% else %}
+                <p class="card-text like" id="like" data-id="{{ post.id }}">unlike</p>
+                {% endif %}
+                <p class = "card-text" id="likecount-{{ post.id }}">{{ post.likes.count }}</p>
+                <p class="card-text"> {{ post.content }}</p>
                 <p class="card-text">
                     <small class="text-muted">{{ post.timestamp }}</small>
                 </p>
@@ -81,3 +87,7 @@
 {% endif %}
 
 {% endblock %} 
+
+{% block script %}
+<script src="{% static 'network/like.js' %}"></script>
+{% endblock %}
