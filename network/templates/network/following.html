@@ -5,19 +5,19 @@
     <div class="row d-flex justify-content-center">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">
-                    <a href="{% url 'profile' post.user %}" class="text-decoration-none text-dark">{{ post.user }}</a>
-                </h5>
-                <p class="card-text">{{ post.content }}</p>
+                <h5 class="card-title"><div class="user"><a href="{% url 'profile' post.user %}" class="text-decoration-none text-dark">{{ post.user }}</a></div></h5>
+                <p class="card-text" id="content-{{ post.id }}"> {{ post.content }}</p>
                 {% if request.user not in post.likes.all %}
-                <p class="card-text like" id="like" data-id="{{ post.id }}">like</p>
+                {% if request.user != post.user %}
+                <button type="button" class="btn like" data-id="{{ post.id }}"><i class="bi bi-heart"></i></button>
+                {% endif %}               
                 {% else %}
-                <p class="card-text like" id="like" data-id="{{ post.id }}">unlike</p>
+                <button type="button" class="btn like" data-id="{{ post.id }}"><i class="bi bi-heart-fill"></i></button>
+                {% endif %}                
+                {% if post.user == request.user %}
+                <button type="button" class="btn edit" data-id="{{ post.id }}"><i class="bi-pencil-square"></i></button>
                 {% endif %}
                 <p class = "card-text" id="likecount-{{ post.id }}">{{ post.likes.count }}</p>
-                {% if post.user == request.user %}
-                <button type="button" class="btn btn-primary edit" data-id="{{ post.id }}">Edit</button>
-                {% endif %}
                 <p class="card-text">
                     <small class="text-muted">{{ post.timestamp }}</small>
                 </p>
@@ -64,6 +64,5 @@
 
 {% block script %}
 <script src="{% static 'network/like.js' %}"></script>
-<script src="{% static 'network/follow.js' %}"></script>
 
 {% endblock %}

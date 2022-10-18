@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
             content = document.querySelector(`#content-${post}`)
             content.innerHTML = `<textarea id="edit-${post}" class="form-control" rows="4">${content.textContent}</textarea>`
             const save = document.createElement('button')
-            save.className = 'btn btn-primary'
-            save.id =`save-${post}`
-            save.innerHTML = 'Save'
-            
+            save.className = 'btn'
+            save.id = `save-${post}`
+            save.innerHTML = '<i class="bi bi-check-lg"></i>'
+
             edit.replaceWith(save)
             document.querySelector(`#save-${post}`).addEventListener('click', () => {
                 new_content = document.querySelector(`#edit-${post}`).value
@@ -21,12 +21,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         content: new_content
                     })
                 })
-                .then(response => response.json())
-                .then(result => {
-                    console.log(result)
-                    content.innerHTML = new_content
-                    save.replaceWith(edit)
-                });
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result)
+                        content.innerHTML = new_content
+                        save.replaceWith(edit)
+                    });
             });
         });
     });

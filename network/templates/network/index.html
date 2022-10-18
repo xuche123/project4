@@ -14,7 +14,7 @@
 
 {% if user.is_authenticated%}
 
-<div class="container">
+{% comment %} <div class="container"> {% endcomment %}
     <h1>All Posts</h1>
     <div class="row d-flex justify-content-center">
         <div class="card">
@@ -23,7 +23,7 @@
                 <form method="POST">
                     {% csrf_token %}
                     <div class="form-group">{{ post_form.content }}</div>
-                    <button type="submit" class="btn btn-primary">Post</button>
+                    <button type="submit" class="btn btn-primary rounded-pill">Post</button>
                 </form>
             </div>
         </div>
@@ -34,16 +34,18 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title"><div class="user"><a href="{% url 'profile' post.user %}" class="text-decoration-none text-dark">{{ post.user }}</a></div></h5>
+                <p class="card-text" id="content-{{ post.id }}"> {{ post.content }}</p>
                 {% if request.user not in post.likes.all %}
-                <p class="card-text like" data-id="{{ post.id }}">like</p>
+                {% if request.user != post.user %}
+                <button type="button" class="btn like" data-id="{{ post.id }}"><i class="bi bi-heart"></i></button>
+                {% endif %}               
                 {% else %}
-                <p class="card-text like" data-id="{{ post.id }}">unlike</p>
+                <button type="button" class="btn like" data-id="{{ post.id }}"><i class="bi bi-heart-fill"></i></button>
+                {% endif %}                
+                {% if post.user == request.user %}
+                <button type="button" class="btn edit" data-id="{{ post.id }}"><i class="bi-pencil-square"></i></button>
                 {% endif %}
                 <p class = "card-text" id="likecount-{{ post.id }}">{{ post.likes.count }}</p>
-                <p class="card-text" id="content-{{ post.id }}"> {{ post.content }}</p>
-                {% if post.user == request.user %}
-                <button type="button" class="btn btn-primary edit" data-id="{{ post.id }}">Edit</button>
-                {% endif %}
                 <p class="card-text">
                     <small class="text-muted">{{ post.timestamp }}</small>
                 </p>
@@ -86,7 +88,7 @@
             {% endif %}
         </ul>
     </nav>
-</div>
+{% comment %} </div> {% endcomment %}
 {% endif %}
 
 {% endblock %} 

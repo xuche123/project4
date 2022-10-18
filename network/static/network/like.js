@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log(result['type'])
                     const count = document.querySelector(`#likecount-${post}`)
                     if (result['type'] == 'like') {
-                        like.innerHTML = 'unlike'
+                        like.innerHTML ='<i class="bi bi-heart-fill"></i>'
                     }
                     else {
-                        like.innerHTML = 'like'
+                        like.innerHTML = '<i class="bi bi-heart"></i>'
                     }
                     count.innerHTML = result['count']
                 });

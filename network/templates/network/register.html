@@ -1,7 +1,7 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-
+    {% comment %} <div class="container"> {% endcomment %}
     <h2>Register</h2>
 
     {% if message %}
@@ -26,5 +26,5 @@
     </form>
 
     Already have an account? <a href="{% url 'login' %}">Log In here.</a>
-
+{% comment %} </div> {% endcomment %}
 {% endblock %}
