@@ -98,6 +98,7 @@ def profile(request, username):
     })
 
 @csrf_exempt
+@login_required
 def follow(request):
     if request.method == 'POST':
         follow = json.loads(request.body)['follow']
@@ -130,7 +131,17 @@ def like(request):
             post.save()
             count = post.likes.count()
             return JsonResponse({"type": "like", "count": count}, status=201)
-    pass
+
+@csrf_exempt
+@login_required
+def edit(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        post_id = data["post_id"]
+        post = Post.objects.get(id=post_id)
+        post.content = data["content"]
+        post.save()
+        return JsonResponse({"message": "Post edited successfully."}, status=201)
 
 def following(request):
     following = Follow.objects.filter(follower=request.user).values('following')
