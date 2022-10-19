@@ -5,6 +5,7 @@
         <div class="card-body">
             <div class="profile hstack gap-3">
                 <h5 class="card-title">{{ view_user }}</h5>
+                
                 <div class="ms-auto">
                     {% if request.user != view_user %} {% if following %}
                     <button
@@ -27,6 +28,7 @@
                     {% endif %} {% endif %}
                 </div>
             </div>
+            <h6 class="card-subtitle mb-2"><i class="bi bi-calendar3"></i> Joined {{ view_user.date_joined }}</h6>
             <h6 class="card-subtitle mb-2 text-muted">
                 {{ view_user.user_following.count }} Following &emsp;
                 <span id="follower-count"
@@ -39,45 +41,32 @@
 </div>
 <br />
 {% for post in page_obj %}
-<div class="row d-flex justify-content-center">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">
-                <div class="user">
-                    <a
-                        href="{% url 'profile' post.user %}"
-                        class="text-decoration-none text-dark"
-                        >{{ post.user }}</a
-                    >
+    <div class="row d-flex justify-content-center">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><div class="user"><a href="{% url 'profile' post.user %}" class="text-decoration-none text-dark">{{ post.user }}</a></div></h5>
+                <p class="card-text" id="content-{{ post.id }}"> {{ post.content }}</p>
+                <div class="profile hstack">
+                    {% if request.user not in post.likes.all %}
+                        {% if request.user != post.user %}
+                        <button type="button" class="btn like ps-0" data-id="{{ post.id }}"><i class="bi bi-heart"></i> {{ post.likes.count }}</button>
+                        {% else %}
+                        <button type="button" class="btn ps-0" data-id="{{ post.id }}"><i class="bi bi-heart"></i> {{ post.likes.count }}</button>
+                        {% endif %}               
+                    {% else %}
+                        <button type="button" class="btn like ps-0" data-id="{{ post.id }}"><i class="bi bi-heart-fill"></i> {{ post.likes.count }}</button>
+                    {% endif %}                
+                    {% if post.user == request.user %}
+                    <button type="button" class="btn edit ps-0" data-id="{{ post.id }}"><i class="bi-pencil-square"></i> Edit</button>
+                    {% endif %}
                 </div>
-            </h5>
-            <p class="card-text" id="content-{{ post.id }}">
-                {{ post.content }}
-            </p>
-            {% if request.user not in post.likes.all %}
-            {% if request.user != post.user %}
-            <button type="button" class="btn like" data-id="{{ post.id }}">
-                <i class="bi bi-heart"></i>
-            </button>
-            {% endif %} {% else %}
-            <button type="button" class="btn like" data-id="{{ post.id }}">
-                <i class="bi bi-heart-fill"></i>
-            </button>
-            {% endif %} {% if post.user == request.user %}
-            <button type="button" class="btn edit" data-id="{{ post.id }}">
-                <i class="bi-pencil-square"></i>
-            </button>
-            {% endif %}
-            <p class="card-text" id="likecount-{{ post.id }}">
-                {{ post.likes.count }}
-            </p>
-            <p class="card-text">
-                <small class="text-muted">{{ post.timestamp }}</small>
-            </p>
+                <p class="card-text">
+                    <small class="text-muted">{{ post.timestamp }}</small>
+                </p>
+            </div>
         </div>
     </div>
-</div>
-<br />
+    <br />
 {% endfor %}
 
 <nav aria-label="Page navigation">
@@ -96,16 +85,11 @@
         </li>
         {% endif %}
         <li class="page-item">
-            <span class="page-link"
-                >Page {{ page_obj.number }} of {{page_obj.paginator.num_pages
-                }}</span
-            >
+            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
         </li>
         {% if page_obj.has_next %}
         <li class="page-item">
-            <a href="?page={{ page_obj.next_page_number }}" class="page-link"
-                >Next &raquo;</a
-            >
+            <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next &raquo;</a>
         </li>
         {% else %}
         <li class="page-item disabled">
