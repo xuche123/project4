@@ -103,16 +103,18 @@ def follow(request):
     if request.method == 'POST':
         follow = json.loads(request.body)['follow']
         follow = User.objects.get(username=follow)
-
+        
         exist = Follow.objects.filter(follower=request.user, following=follow)
+        
         if not exist:
-            follow = Follow(follower=request.user, following=follow)
-            follow.save()
-            return JsonResponse({"type": "follow"}, status=201)
+            follow_obj = Follow(follower=request.user, following=follow)
+            follow_obj.save()
+            follower_count=follow.user_follower.count()
+            return JsonResponse({"type": "follow", "follower_count": follower_count}, status=201)
         else:
             exist.delete()
-            exist.save()
-            return JsonResponse({"type": "unfollow"}, status=201)
+            follower_count=follow.user_follower.count()
+            return JsonResponse({"type": "unfollow", "follower_count": follower_count}, status=201)
 
 @csrf_exempt
 @login_required

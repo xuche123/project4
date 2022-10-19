@@ -11,13 +11,14 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then(response => response.json())
                 .then(result => {
-                    console.log(result['type'])
+                    console.log(result)
                     if (result['type'] == 'follow') {
-                        follow.innerHTML = 'Unfollow'
+                        follow.innerHTML = 'Following'
                     }
                     else {
                         follow.innerHTML = 'Follow'
                     }
+                    document.querySelector('#follower-count').innerHTML = result['follower_count']
                 });
         });
     }

@@ -1,33 +1,76 @@
 {% extends "network/layout.html" %} {% load static %} {% block body %}
+<br />
 <div class="row d-flex justify-content-center">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">{{ view_user }}</h5>
-            {% if request.user != view_user %} {% if following %}
-            <h6 id="follow" data-id="{{ view_user }}">Unfollow</h6>
-            {% else %}
-            <h6 id="follow" data-id="{{ view_user }}">Follow</h6>
-            {% endif %} {% endif %}
+            <div class="profile hstack gap-3">
+                <h5 class="card-title">{{ view_user }}</h5>
+                <div class="ms-auto">
+                    {% if request.user != view_user %} {% if following %}
+                    <button
+                        type="button"
+                        class="btn btn-light rounded-pill"
+                        id="follow"
+                        data-id="{{ view_user }}"
+                    >
+                        Following
+                    </button>
+                    {% else %}
+                    <button
+                        type="button"
+                        class="btn btn-light rounded-pill"
+                        id="follow"
+                        data-id="{{ view_user }}"
+                    >
+                        Follow
+                    </button>
+                    {% endif %} {% endif %}
+                </div>
+            </div>
+            <h6 class="card-subtitle mb-2 text-muted">
+                {{ view_user.user_following.count }} Following &emsp;
+                <span id="follower-count"
+                    >{{ view_user.user_follower.count }}</span
+                >
+                Followers
+            </h6>
         </div>
     </div>
 </div>
+<br />
 {% for post in page_obj %}
 <div class="row d-flex justify-content-center">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title"><div class="user"><a href="{% url 'profile' post.user %}" class="text-decoration-none text-dark">{{ post.user }}</a></div></h5>
-            <p class="card-text" id="content-{{ post.id }}"> {{ post.content }}</p>
+            <h5 class="card-title">
+                <div class="user">
+                    <a
+                        href="{% url 'profile' post.user %}"
+                        class="text-decoration-none text-dark"
+                        >{{ post.user }}</a
+                    >
+                </div>
+            </h5>
+            <p class="card-text" id="content-{{ post.id }}">
+                {{ post.content }}
+            </p>
             {% if request.user not in post.likes.all %}
             {% if request.user != post.user %}
-            <button type="button" class="btn like" data-id="{{ post.id }}"><i class="bi bi-heart"></i></button>
-            {% endif %}               
-            {% else %}
-            <button type="button" class="btn like" data-id="{{ post.id }}"><i class="bi bi-heart-fill"></i></button>
-            {% endif %}                
-            {% if post.user == request.user %}
-            <button type="button" class="btn edit" data-id="{{ post.id }}"><i class="bi-pencil-square"></i></button>
+            <button type="button" class="btn like" data-id="{{ post.id }}">
+                <i class="bi bi-heart"></i>
+            </button>
+            {% endif %} {% else %}
+            <button type="button" class="btn like" data-id="{{ post.id }}">
+                <i class="bi bi-heart-fill"></i>
+            </button>
+            {% endif %} {% if post.user == request.user %}
+            <button type="button" class="btn edit" data-id="{{ post.id }}">
+                <i class="bi-pencil-square"></i>
+            </button>
             {% endif %}
-            <p class = "card-text" id="likecount-{{ post.id }}">{{ post.likes.count }}</p>
+            <p class="card-text" id="likecount-{{ post.id }}">
+                {{ post.likes.count }}
+            </p>
             <p class="card-text">
                 <small class="text-muted">{{ post.timestamp }}</small>
             </p>
@@ -53,7 +96,10 @@
         </li>
         {% endif %}
         <li class="page-item">
-            <span class="page-link" >Page {{ page_obj.number }} of {{page_obj.paginator.num_pages }}</span>
+            <span class="page-link"
+                >Page {{ page_obj.number }} of {{page_obj.paginator.num_pages
+                }}</span
+            >
         </li>
         {% if page_obj.has_next %}
         <li class="page-item">
@@ -71,4 +117,5 @@
 {% endblock %} {% block script %}
 <script src="{% static 'network/profile.js' %}"></script>
 <script src="{% static 'network/edit.js' %}"></script>
+<script src="{% static 'network/like.js' %}"></script>
 {% endblock %}
